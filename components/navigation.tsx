@@ -1,24 +1,27 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Home, ClipboardList, Milk, BarChart3 } from "lucide-react";
+
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
 const TABS = [
-  { id: "home", icon: "🏠", label: "Inicio" },
-  { id: "log", icon: "📋", label: "Registro" },
-  { id: "extraction", icon: "🥛", label: "Extraccion" },
-  { id: "stats", icon: "📊", label: "Resumen" },
+  { id: "home", icon: Home, label: "Inicio" },
+  { id: "log", icon: ClipboardList, label: "Registro" },
+  { id: "extraction", icon: Milk, label: "Extraccion" },
+  { id: "stats", icon: BarChart3, label: "Resumen" },
 ];
 
 export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
       <div 
-        className="max-w-[440px] mx-auto flex justify-around items-end px-2 pt-2 pb-4"
+        className="max-w-[440px] mx-auto flex justify-around items-end px-2 pt-2 pb-4 bg-gradient-to-t from-background via-background to-transparent"
         style={{
-          background: "linear-gradient(to top, #0A0A15 85%, transparent)",
           paddingBottom: "max(env(safe-area-inset-bottom, 12px), 12px)",
         }}
       >
@@ -31,7 +34,6 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
           />
         ))}
         
-        {/* Spacer for FAB */}
         <div className="w-16" />
         
         {TABS.slice(2).map((tab) => (
@@ -52,34 +54,33 @@ function NavItem({
   active, 
   onClick 
 }: { 
-  tab: { id: string; icon: string; label: string }; 
+  tab: { id: string; icon: React.ComponentType<{ className?: string }>; label: string }; 
   active: boolean;
   onClick: () => void;
 }) {
+  const Icon = tab.icon;
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={onClick}
-      className="flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer min-w-[60px] transition-all"
+      className={cn(
+        "flex flex-col items-center gap-1 h-auto min-w-[60px] px-2 py-1.5 rounded-xl transition-all",
+        active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+      )}
     >
-      <span
-        className="text-xl transition-all duration-200"
-        style={{
-          filter: active ? "none" : "grayscale(100%)",
-          opacity: active ? 1 : 0.5,
-          transform: active ? "scale(1.1)" : "scale(1)",
-        }}
-      >
-        {tab.icon}
-      </span>
-      <span
-        className="text-[10px] font-bold transition-colors"
-        style={{ color: active ? "#4FC3F7" : "#555" }}
-      >
+      <Icon className={cn(
+        "size-5 transition-transform",
+        active && "scale-110"
+      )} />
+      <span className={cn(
+        "text-[10px] font-bold",
+        active ? "text-primary" : "text-muted-foreground"
+      )}>
         {tab.label}
       </span>
       {active && (
-        <div className="w-1 h-1 rounded-full bg-[#4FC3F7]" />
+        <div className="size-1 rounded-full bg-primary" />
       )}
-    </button>
+    </Button>
   );
 }

@@ -1,3 +1,10 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString("es-AR", {
     hour: "2-digit",
@@ -33,7 +40,7 @@ export function toDateTimeLocal(iso: string): string {
 }
 
 export function timeStr(h: number | null): string {
-  if (h === null) return "—";
+  if (h === null) return "\u2014";
   if (h < 1) {
     const m = Math.round(h * 60);
     return `hace ${m} min`;
@@ -45,9 +52,9 @@ export function timeStr(h: number | null): string {
 
 export function poopColor(h: number | null): { color: string; icon: string } {
   if (h === null) return { color: "#90A4AE", icon: "" };
-  if (h < 48) return { color: "#66BB6A", icon: "✅" };
-  if (h < 120) return { color: "#FFB74D", icon: "⚠️" };
-  return { color: "#EF5350", icon: "🚨" };
+  if (h < 48) return { color: "#66BB6A", icon: "" };
+  if (h < 120) return { color: "#FFB74D", icon: "" };
+  return { color: "#EF5350", icon: "" };
 }
 
 export function feedColor(h: number | null): string {
@@ -59,9 +66,9 @@ export function feedColor(h: number | null): string {
 
 export function bathColor(h: number | null): { color: string; icon: string } {
   if (h === null) return { color: "#90A4AE", icon: "" };
-  if (h < 48) return { color: "#66BB6A", icon: "✅" };
-  if (h < 72) return { color: "#FFB74D", icon: "⚠️" };
-  return { color: "#EF5350", icon: "🚨" };
+  if (h < 48) return { color: "#66BB6A", icon: "" };
+  if (h < 72) return { color: "#FFB74D", icon: "" };
+  return { color: "#EF5350", icon: "" };
 }
 
 export function rangeStart(r: string): Date {

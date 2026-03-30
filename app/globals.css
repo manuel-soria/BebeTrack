@@ -1,25 +1,94 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-sans: var(--font-nunito), 'Nunito', 'Segoe UI', sans-serif;
+  --font-heading: var(--font-nunito), 'Nunito', 'Segoe UI', sans-serif;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-baby-blue: #4FC3F7;
+  --color-baby-green: #81C784;
+  --color-baby-purple: #9C6ADE;
+  --color-baby-pink: #F48FB1;
+  --color-baby-warning: #FFB74D;
+  --color-baby-danger: #EF5350;
+  --color-baby-success: #66BB6A;
 }
 
 :root {
   --background: #0A0A15;
-  --foreground: #ffffff;
+  --foreground: #F0F0F5;
   --card: #12121F;
-  --card-border: #2A2A4E;
-  --card-highlight: #1E1E35;
-  --muted: #555;
-  --border: #2A2A3E;
-  --input: #0D0D1A;
+  --card-foreground: #F0F0F5;
+  --popover: #12121F;
+  --popover-foreground: #F0F0F5;
   --primary: #4FC3F7;
-  --secondary: #81C784;
+  --primary-foreground: #0A0A15;
+  --secondary: #1A1A2E;
+  --secondary-foreground: #C0C0D0;
+  --muted: #1A1A2E;
+  --muted-foreground: #888899;
   --accent: #9C6ADE;
-  --accent-pink: #F48FB1;
-  --warning: #FFB74D;
-  --danger: #EF5350;
-  --success: #66BB6A;
+  --accent-foreground: #F0F0F5;
+  --destructive: #EF5350;
+  --border: #2A2A4E;
+  --input: #0D0D1A;
+  --ring: #4FC3F7;
+  --chart-1: #4FC3F7;
+  --chart-2: #81C784;
+  --chart-3: #9C6ADE;
+  --chart-4: #F48FB1;
+  --chart-5: #FFB74D;
+  --radius: 0.75rem;
+  --sidebar: #12121F;
+  --sidebar-foreground: #F0F0F5;
+  --sidebar-primary: #4FC3F7;
+  --sidebar-primary-foreground: #0A0A15;
+  --sidebar-accent: #1A1A2E;
+  --sidebar-accent-foreground: #F0F0F5;
+  --sidebar-border: #2A2A4E;
+  --sidebar-ring: #4FC3F7;
 }
 
 * {
@@ -36,10 +105,6 @@ html, body {
   overscroll-behavior: none;
 }
 
-body {
-  font-family: 'Nunito', 'Segoe UI', sans-serif;
-}
-
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -49,7 +114,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A2A3E;
+  background: var(--border);
   border-radius: 2px;
 }
 
@@ -57,7 +122,6 @@ input, textarea, select {
   color-scheme: dark;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -74,4 +138,16 @@ input, textarea, select {
 
 .animate-slide-up {
   animation: slideUp 0.25s ease-out;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

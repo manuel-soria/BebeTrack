@@ -4,7 +4,9 @@ import { useState } from "react";
 import { BabyEvent } from "@/lib/types";
 import { BABIES, EVENT_TYPES } from "@/lib/constants";
 import { EventRow } from "@/components/event-row";
-import { formatDate } from "@/lib/utils";
+import { formatDate, cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface LogTabProps {
   events: BabyEvent[];
@@ -13,12 +15,12 @@ interface LogTabProps {
 
 const TYPE_FILTERS = [
   { id: "all", label: "Todos", icon: null },
-  { id: "feed", label: "Alimento", icon: "🍼" },
-  { id: "pee", label: "Pis", icon: "💧" },
-  { id: "poop", label: "Popo", icon: "💩" },
-  { id: "bath", label: "Bano", icon: "🛁" },
-  { id: "extraction", label: "Extraccion", icon: "🥛" },
-  { id: "other", label: "Otro", icon: "📝" },
+  { id: "feed", label: "Alimento", icon: null },
+  { id: "pee", label: "Pis", icon: null },
+  { id: "poop", label: "Popo", icon: null },
+  { id: "bath", label: "Bano", icon: null },
+  { id: "extraction", label: "Extraccion", icon: null },
+  { id: "other", label: "Otro", icon: null },
 ];
 
 export function LogTab({ events, onDelete }: LogTabProps) {
@@ -33,7 +35,6 @@ export function LogTab({ events, onDelete }: LogTabProps) {
     filtered = filtered.filter((e) => e.type === filterType);
   }
 
-  // Group by date
   const grouped: Record<string, BabyEvent[]> = {};
   filtered.forEach((ev) => {
     const key = formatDate(ev.date_time);
@@ -43,17 +44,15 @@ export function LogTab({ events, onDelete }: LogTabProps) {
 
   return (
     <div>
-      {/* Baby Filter */}
       <div className="mb-4">
-        <div className="text-[10px] text-[#555] font-bold tracking-widest uppercase mb-2">
+        <div className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase mb-2">
           Por bebe
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           <FilterChip
             label="Todos"
             active={filterBaby === "all"}
             onClick={() => setFilterBaby("all")}
-            color="#666"
           />
           {BABIES.map((b) => (
             <FilterChip
@@ -61,42 +60,41 @@ export function LogTab({ events, onDelete }: LogTabProps) {
               label={b.name}
               active={filterBaby === b.id}
               onClick={() => setFilterBaby(b.id)}
-              color={b.color}
+              activeColor={b.color}
             />
           ))}
         </div>
       </div>
 
-      {/* Type Filter */}
       <div className="mb-4">
-        <div className="text-[10px] text-[#555] font-bold tracking-widest uppercase mb-2">
+        <div className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase mb-2">
           Por tipo
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {TYPE_FILTERS.map((f) => {
             const et = EVENT_TYPES[f.id];
-            const color = et?.color || "#666";
             return (
               <FilterChip
                 key={f.id}
-                label={f.icon ? `${f.icon} ${f.label}` : f.label}
+                label={f.label}
                 active={filterType === f.id}
                 onClick={() => setFilterType(f.id)}
-                color={color}
+                activeColor={et?.color}
               />
             );
           })}
         </div>
       </div>
 
-      {/* Events List */}
+      <Separator className="mb-4 bg-border" />
+
       {Object.keys(grouped).length > 0 ? (
         Object.entries(grouped).map(([date, evts]) => (
           <div key={date} className="mb-4">
-            <div className="text-[10px] text-[#555] font-bold tracking-widest uppercase mb-2">
+            <div className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase mb-2">
               {date}
             </div>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               {evts.map((ev) => (
                 <EventRow key={ev.id} event={ev} showDelete onDelete={onDelete} />
               ))}
@@ -104,7 +102,7 @@ export function LogTab({ events, onDelete }: LogTabProps) {
           </div>
         ))
       ) : (
-        <div className="text-center text-[#555] py-12 text-sm">
+        <div className="text-center text-muted-foreground py-12 text-sm">
           Sin registros
         </div>
       )}
@@ -116,24 +114,31 @@ function FilterChip({
   label,
   active,
   onClick,
-  color,
+  activeColor,
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
-  color: string;
+  activeColor?: string;
 }) {
   return (
-    <button
+    <Button
+      variant={active ? "secondary" : "ghost"}
+      size="sm"
       onClick={onClick}
-      className="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all"
-      style={{
-        background: active ? `${color}20` : "transparent",
-        border: `1.5px solid ${active ? color : "#2A2A4E"}`,
-        color: active ? color : "#666",
-      }}
+      className={cn(
+        "rounded-full text-xs font-bold px-3 border transition-all",
+        active 
+          ? "border-primary/40" 
+          : "border-border text-muted-foreground"
+      )}
+      style={active && activeColor ? { 
+        background: `${activeColor}20`, 
+        borderColor: activeColor,
+        color: activeColor 
+      } : undefined}
     >
       {label}
-    </button>
+    </Button>
   );
 }

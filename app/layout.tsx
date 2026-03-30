@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const nunito = Nunito({ 
@@ -37,6 +38,7 @@ export default function RootLayout({
         <div className="w-full max-w-[440px] mx-auto min-h-screen relative">
           {children}
         </div>
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

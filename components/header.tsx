@@ -1,6 +1,8 @@
 "use client";
 
 import { BabyEvent } from "@/lib/types";
+import { Badge } from "@/components/ui/badge";
+import { MoonStar } from "lucide-react";
 
 interface HeaderProps {
   events: BabyEvent[];
@@ -41,20 +43,20 @@ export function Header({ events, isLive }: HeaderProps) {
   return (
     <header className="px-5 pt-6 pb-4">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🌙</span>
-            <h1 className="text-[22px] font-black text-white tracking-tight">BebeTrack</h1>
+            <MoonStar className="size-6 text-primary" />
+            <h1 className="text-[22px] font-black text-foreground tracking-tight">BebeTrack</h1>
           </div>
-          <p className="text-sm text-[#9C6ADE] mt-0.5">{formatDate()}</p>
+          <p className="text-sm text-accent font-semibold">{formatDate()}</p>
           {lastReg && (
-            <p className="text-[11px] text-[#666] mt-1">{lastReg}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{lastReg}</p>
           )}
         </div>
         {isLive && (
-          <div className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-[#66BB6A20] text-[#66BB6A] border border-[#66BB6A40]">
+          <Badge variant="outline" className="border-baby-success/40 bg-baby-success/10 text-baby-success text-[10px] font-extrabold">
             En vivo
-          </div>
+          </Badge>
         )}
       </div>
     </header>

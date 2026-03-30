@@ -1,7 +1,10 @@
 "use client";
 
 import { BabyEvent, Baby } from "@/lib/types";
-import { timeStr } from "@/lib/utils";
+import { timeStr, cn } from "@/lib/utils";
+import { Card, CardHeader, CardTitle, CardAction, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Baby as BabyIcon, Droplets, ShowerHead, Milk } from "lucide-react";
 
 interface Stats24h {
   feeds: number;
@@ -48,97 +51,102 @@ export function BabyCard({ baby, events }: BabyCardProps) {
   const s = getStats24h(events, baby.id);
 
   const statCells = [
-    { lbl: "Alimento", val: s.feeds, icon: "🍼" },
-    { lbl: "ml (24h)", val: s.totalMl || "—", icon: "📊" },
-    { lbl: "Pis", val: s.pees, icon: "💧" },
-    { lbl: "Popo", val: s.poops, icon: "💩" },
+    { lbl: "Alimento", val: s.feeds, Icon: Milk },
+    { lbl: "ml (24h)", val: s.totalMl || "\u2014", Icon: BabyIcon },
+    { lbl: "Pis", val: s.pees, Icon: Droplets },
+    { lbl: "Popo", val: s.poops, Icon: ShowerHead },
   ];
 
   return (
-    <div className="rounded-2xl overflow-hidden mb-4 border border-[#2A2A4E] bg-[#12121F]">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-3">
-        <div className="flex items-center gap-2">
+    <Card className="bg-card border-border">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
           <span className="text-2xl">{baby.emoji}</span>
           <span className="text-xl font-extrabold" style={{ color: baby.color }}>
             {baby.name}
           </span>
-        </div>
-        <div className="text-[10px] font-bold tracking-wider px-3 py-1.5 rounded-full bg-[#1A1A2E] border border-[#2A2A4E] text-[#888]">
-          ULTIMAS 24H
-        </div>
-      </div>
+        </CardTitle>
+        <CardAction>
+          <Badge variant="secondary" className="text-[10px] font-bold tracking-wider text-muted-foreground">
+            ULTIMAS 24H
+          </Badge>
+        </CardAction>
+      </CardHeader>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-4 gap-2 px-4 pb-3">
-        {statCells.map((x) => (
-          <div
-            key={x.lbl}
-            className="rounded-xl py-3 text-center bg-[#1A1A2E] border border-[#2A2A4E]"
-          >
-            <div className="text-lg mb-1">{x.icon}</div>
-            <div className="text-lg font-extrabold text-white">{x.val}</div>
-            <div className="text-[9px] text-[#666] mt-1 uppercase tracking-wide">{x.lbl}</div>
-          </div>
-        ))}
-      </div>
+      <CardContent>
+        <div className="grid grid-cols-4 gap-2">
+          {statCells.map((x) => (
+            <div
+              key={x.lbl}
+              className="rounded-xl py-3 text-center bg-secondary border border-border"
+            >
+              <x.Icon className="size-5 mx-auto mb-1 text-muted-foreground" />
+              <div className="text-lg font-extrabold text-foreground">{x.val}</div>
+              <div className="text-[9px] text-muted-foreground mt-1 uppercase tracking-wide font-semibold">{x.lbl}</div>
+            </div>
+          ))}
+        </div>
 
-      {/* Status Lines */}
-      <div className="px-4 pb-4 space-y-2">
-        <StatusLine
-          icon="💩"
-          text={s.lastPoopH !== null ? `Ultimo popo ${timeStr(s.lastPoopH)}` : "Sin popo registrado"}
-          hours={s.lastPoopH}
-          type="poop"
-        />
-        <StatusLine
-          icon="🛁"
-          text={s.lastBathH !== null ? `Ultimo bano ${timeStr(s.lastBathH)}` : "Sin banos registrados"}
-          hours={s.lastBathH}
-          type="bath"
-        />
-      </div>
-    </div>
+        <div className="flex flex-col gap-2 mt-3">
+          <StatusLine
+            label="Ultimo popo"
+            text={s.lastPoopH !== null ? timeStr(s.lastPoopH) : "Sin registro"}
+            hours={s.lastPoopH}
+            type="poop"
+          />
+          <StatusLine
+            label="Ultimo bano"
+            text={s.lastBathH !== null ? timeStr(s.lastBathH) : "Sin registro"}
+            hours={s.lastBathH}
+            type="bath"
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function StatusLine({ 
-  icon, 
+  label,
   text, 
   hours, 
   type 
 }: { 
-  icon: string; 
+  label: string;
   text: string; 
   hours: number | null;
   type: "poop" | "bath";
 }) {
   const getColor = () => {
-    if (hours === null) return "#666";
+    if (hours === null) return "muted";
     if (type === "poop") {
-      if (hours < 48) return "#66BB6A";
-      if (hours < 120) return "#FFB74D";
-      return "#EF5350";
+      if (hours < 48) return "success";
+      if (hours < 120) return "warning";
+      return "danger";
     }
-    // bath
-    if (hours < 48) return "#66BB6A";
-    if (hours < 72) return "#FFB74D";
-    return "#EF5350";
+    if (hours < 48) return "success";
+    if (hours < 72) return "warning";
+    return "danger";
   };
 
-  const color = getColor();
+  const status = getColor();
+  const colorMap: Record<string, { bg: string; border: string; text: string }> = {
+    muted: { bg: "bg-secondary", border: "border-border", text: "text-muted-foreground" },
+    success: { bg: "bg-baby-success/10", border: "border-baby-success/30", text: "text-baby-success" },
+    warning: { bg: "bg-baby-warning/10", border: "border-baby-warning/30", text: "text-baby-warning" },
+    danger: { bg: "bg-baby-danger/10", border: "border-baby-danger/30", text: "text-baby-danger" },
+  };
+
+  const colors = colorMap[status];
 
   return (
-    <div 
-      className="flex items-center gap-3 rounded-xl px-3 py-2.5"
-      style={{ 
-        background: hours !== null ? `${color}15` : "#1A1A2E",
-        border: `1px solid ${hours !== null ? `${color}30` : "#2A2A4E"}`,
-      }}
-    >
-      <span className="text-sm">{icon}</span>
-      <span className="text-xs font-semibold" style={{ color: hours !== null ? color : "#666" }}>
-        {text}
+    <div className={cn(
+      "flex items-center gap-3 rounded-xl px-3 py-2.5 border",
+      colors.bg,
+      colors.border,
+    )}>
+      <span className={cn("text-xs font-semibold", colors.text)}>
+        {label} {text}
       </span>
     </div>
   );
