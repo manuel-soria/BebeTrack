@@ -10,7 +10,7 @@ export const EVENT_TYPES: Record<string, EventType> = {
   pee: { label: "Pis", icon: "💧", color: "#FFF176" },
   poop: { label: "Popo", icon: "💩", color: "#FFCC80" },
   bath: { label: "Bano", icon: "🛁", color: "#CE93D8" },
-  extraction: { label: "Extraccion", icon: "🪣", color: "#F48FB1" },
+  extraction: { label: "Extraccion", icon: "🥛", color: "#F48FB1" },
   other: { label: "Otro", icon: "📝", color: "#90A4AE" },
 };
 
@@ -38,7 +38,7 @@ export const LOG_TYPES = [
   { id: "pee", label: "💧 Pis" },
   { id: "poop", label: "💩 Popo" },
   { id: "bath", label: "🛁 Bano" },
-  { id: "extraction", label: "🪣 Extraccion" },
+  { id: "extraction", label: "🥛 Extraccion" },
   { id: "other", label: "📝 Otro" },
 ];
 

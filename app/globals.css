@@ -7,19 +7,19 @@
 :root {
   --background: #0A0A15;
   --foreground: #ffffff;
-  --card: #1A1A2E;
-  --card-foreground: #ffffff;
-  --muted: #2A2A3E;
-  --muted-foreground: #555555;
+  --card: #12121F;
+  --card-border: #2A2A4E;
+  --card-highlight: #1E1E35;
+  --muted: #555;
   --border: #2A2A3E;
   --input: #0D0D1A;
   --primary: #4FC3F7;
-  --primary-foreground: #000000;
   --secondary: #81C784;
-  --secondary-foreground: #000000;
-  --accent: #F48FB1;
-  --destructive: #EF5350;
-  --radius: 0.75rem;
+  --accent: #9C6ADE;
+  --accent-pink: #F48FB1;
+  --warning: #FFB74D;
+  --danger: #EF5350;
+  --success: #66BB6A;
 }
 
 * {
@@ -49,10 +49,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted);
+  background: #2A2A3E;
   border-radius: 2px;
 }
 
 input, textarea, select {
   color-scheme: dark;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s ease-out;
 }

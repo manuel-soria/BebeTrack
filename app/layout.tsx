@@ -5,6 +5,7 @@ import "./globals.css";
 const nunito = Nunito({ 
   subsets: ["latin"],
   variable: "--font-nunito",
+  weight: ["400", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -32,8 +33,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${nunito.variable} font-sans antialiased w-full flex justify-center`}>
-        <div className="w-full max-w-[440px]">
+      <body className={`${nunito.variable} font-sans antialiased`}>
+        <div className="w-full max-w-[440px] mx-auto min-h-screen relative">
           {children}
         </div>
       </body>

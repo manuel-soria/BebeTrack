@@ -21,128 +21,94 @@ export function ExtractionTab({ events, onDelete, onAddExtraction }: ExtractionT
     .filter((e) => e.type === "feed" && e.subtype === "breast")
     .sort((a, b) => new Date(b.date_time).getTime() - new Date(a.date_time).getTime())[0] || null;
 
-  const lastBreastBaby = lastBreast
-    ? BABIES.find((b) => b.id === lastBreast.baby_id)
-    : null;
+  const lastBreastBaby = lastBreast ? BABIES.find((b) => b.id === lastBreast.baby_id) : null;
 
-  const extH = lastExt
-    ? (Date.now() - new Date(lastExt.date_time).getTime()) / 3600000
-    : null;
-  const breastH = lastBreast
-    ? (Date.now() - new Date(lastBreast.date_time).getTime()) / 3600000
-    : null;
-
-  const bothHigh = extH !== null && breastH !== null && extH > 3 && breastH > 3;
-  const bothVeryHigh = extH !== null && breastH !== null && extH > 6 && breastH > 6;
-  const bannerColor = bothVeryHigh ? "#EF5350" : bothHigh ? "#FFB74D" : "#F48FB1";
+  const extH = lastExt ? (Date.now() - new Date(lastExt.date_time).getTime()) / 3600000 : null;
+  const breastH = lastBreast ? (Date.now() - new Date(lastBreast.date_time).getTime()) / 3600000 : null;
 
   // Stats
-  const last24h = extractions.filter(
-    (e) => new Date(e.date_time) >= new Date(Date.now() - 86400000)
-  );
+  const last24h = extractions.filter((e) => new Date(e.date_time) >= new Date(Date.now() - 86400000));
   const totalMl24h = last24h.reduce((a, e) => a + (e.ml || 0), 0);
 
   return (
-    <div>
-      {/* Status Banner */}
-      <div
-        className="rounded-2xl p-4 mb-4"
+    <div className="space-y-4">
+      {/* Primary Action Button */}
+      <button
+        onClick={onAddExtraction}
+        className="w-full py-4 rounded-2xl text-base font-bold cursor-pointer active:scale-[0.98] transition-transform"
         style={{
-          background: `${bannerColor}18`,
-          border: `1px solid ${bannerColor}40`,
+          background: "linear-gradient(135deg, #4FC3F7, #81C784)",
+          color: "#000",
+          boxShadow: "0 4px 20px rgba(79, 195, 247, 0.3)",
         }}
       >
-        <div className="text-base font-black mb-3" style={{ color: bannerColor }}>
-          🪣 Estado de Extraccion
-        </div>
+        + Nueva extraccion
+      </button>
 
-        <div className="flex gap-3 mb-3">
-          <div
-            className="flex-1 rounded-xl p-3"
-            style={{ background: "#0D0D1A" }}
-          >
-            <div className="text-xs text-[#555] mb-1">Ultima extraccion</div>
-            <div className="text-sm font-bold text-white">
-              {extH !== null ? timeStr(extH) : "Sin registro"}
+      {/* Stats Card */}
+      <div className="rounded-2xl overflow-hidden border border-[#9C6ADE40] bg-[#1A1A2E20]">
+        <div className="grid grid-cols-2">
+          <div className="p-4 border-r border-[#2A2A4E]">
+            <div className="text-[10px] text-[#888] font-bold tracking-wider uppercase mb-2">
+              Ultima extraccion
+            </div>
+            <div className="text-lg font-black text-white">
+              {extH !== null ? (extH < 1 ? "Ahora" : timeStr(extH)) : "—"}
             </div>
             {lastExt?.ml && (
-              <div className="text-xs text-[#F48FB1] mt-1">{lastExt.ml}ml</div>
+              <div className="text-sm text-[#4FC3F7] mt-1">{lastExt.ml}ml</div>
             )}
           </div>
-          <div
-            className="flex-1 rounded-xl p-3"
-            style={{ background: "#0D0D1A" }}
-          >
-            <div className="text-xs text-[#555] mb-1">Ultima teta</div>
-            <div className="text-sm font-bold text-white">
-              {breastH !== null ? timeStr(breastH) : "Sin registro"}
+          <div className="p-4">
+            <div className="text-[10px] text-[#888] font-bold tracking-wider uppercase mb-2">
+              Ultima succion
+            </div>
+            <div className="text-lg font-black text-white">
+              {breastH !== null ? (breastH < 1 ? "Ahora" : timeStr(breastH)) : "—"}
             </div>
             {lastBreastBaby && (
-              <div
-                className="text-xs mt-1"
-                style={{ color: lastBreastBaby.color }}
-              >
+              <div className="text-sm mt-1" style={{ color: lastBreastBaby.color }}>
                 {lastBreastBaby.emoji} {lastBreastBaby.name}
               </div>
             )}
           </div>
         </div>
-
-        {bothHigh && (
-          <div className="text-xs text-center p-2 rounded-lg mb-2" style={{ background: `${bannerColor}20` }}>
-            {bothVeryHigh
-              ? "⚠️ Mas de 6hs sin teta ni extraccion - conviene extraer pronto"
-              : "💡 Mas de 3hs sin teta ni extraccion"}
-          </div>
-        )}
-
-        <button
-          onClick={onAddExtraction}
-          className="w-full py-3 rounded-xl text-sm font-bold cursor-pointer"
-          style={{
-            background: "linear-gradient(135deg, #F48FB1, #CE93D8)",
-            color: "#000",
-          }}
-        >
-          + Nueva extraccion
-        </button>
       </div>
 
-      {/* Stats */}
-      <div
-        className="rounded-xl p-4 mb-4"
-        style={{ background: "#1A1A2E", border: "1px solid #2A2A3E" }}
-      >
-        <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-          Ultimas 24 horas
+      {/* Analysis Card */}
+      <div className="rounded-2xl p-4 border border-[#9C6ADE40] bg-[#9C6ADE10]">
+        <div className="text-[10px] text-[#9C6ADE] font-bold tracking-wider uppercase mb-2">
+          Analisis
         </div>
-        <div className="flex gap-4">
-          <div>
-            <div className="text-2xl font-black text-white">{last24h.length}</div>
-            <div className="text-[10px] text-[#555]">extracciones</div>
-          </div>
-          <div>
-            <div className="text-2xl font-black" style={{ color: "#F48FB1" }}>
-              {totalMl24h}ml
-            </div>
-            <div className="text-[10px] text-[#555]">total</div>
-          </div>
-        </div>
+        <p className="text-sm text-[#ccc] leading-relaxed">
+          {extractions.length === 0 
+            ? "Sin extracciones registradas aun. Agrega tu primera extraccion para comenzar el seguimiento."
+            : extractions.length === 1
+            ? "Solo hay una extraccion registrada. Agrega mas para ver tendencias."
+            : `${last24h.length} extracciones en las ultimas 24h (${totalMl24h}ml total). ${
+                extH !== null && extH > 4 ? "Considera extraer pronto." : "Buen ritmo!"
+              }`
+          }
+        </p>
       </div>
 
       {/* History */}
-      <div className="text-[11px] text-[#333] font-extrabold tracking-wide uppercase mb-2">
-        Historial de extracciones
-      </div>
-      {extractions.length > 0 ? (
-        extractions.slice(0, 10).map((ev) => (
-          <EventRow key={ev.id} event={ev} showDelete onDelete={onDelete} />
-        ))
-      ) : (
-        <div className="text-center text-[#444] py-6 text-sm">
-          Sin extracciones registradas
+      <div>
+        <div className="text-[11px] text-[#555] font-bold tracking-widest uppercase mb-3">
+          Historial
         </div>
-      )}
+        {extractions.length > 0 ? (
+          <div className="space-y-2">
+            {extractions.slice(0, 10).map((ev) => (
+              <EventRow key={ev.id} event={ev} showDelete onDelete={onDelete} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-[#555] py-8 text-sm">
+            Sin extracciones registradas
+          </div>
+        )}
+      </div>
     </div>
   );
 }

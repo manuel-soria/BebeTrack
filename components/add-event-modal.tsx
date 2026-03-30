@@ -83,144 +83,108 @@ export function AddEventModal({
 
   return (
     <div
-      className="fixed inset-0 flex items-end justify-center z-50"
-      style={{ background: "#000c", animation: "fadeIn 0.2s" }}
+      className="fixed inset-0 flex items-end justify-center z-[80]"
+      style={{ background: "rgba(0,0,0,0.8)" }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[92vh] overflow-y-auto rounded-t-3xl p-5 pb-9"
-        style={{ background: "#12121F", animation: "slideUp 0.25s" }}
+        className="w-full max-w-[440px] max-h-[92vh] overflow-y-auto rounded-t-3xl p-5 pb-8 bg-[#12121F] animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-extrabold">Nuevo registro</h2>
+          <h2 className="text-xl font-extrabold text-white">Nuevo registro</h2>
           <button
             onClick={onClose}
-            className="text-2xl text-[#555] hover:text-white cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#2A2A4E] text-[#888] hover:text-white cursor-pointer transition-colors"
           >
             ×
           </button>
         </div>
 
         {/* Event Type */}
-        <div className="mb-4">
-          <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-            Tipo
-          </div>
+        <Section title="Tipo">
           <div className="flex flex-wrap gap-2">
             {Object.entries(EVENT_TYPES).map(([key, val]) => (
-              <button
+              <ChipButton
                 key={key}
+                label={`${val.icon} ${val.label}`}
+                active={type === key}
+                color={val.color}
                 onClick={() => handleTypeChange(key)}
-                className="px-3 py-2 rounded-xl text-sm font-bold cursor-pointer transition-all"
-                style={{
-                  background: type === key ? `${val.color}30` : "#0D0D1A",
-                  border: `1.5px solid ${type === key ? val.color : "#2A2A3E"}`,
-                  color: type === key ? val.color : "#555",
-                }}
-              >
-                {val.icon} {val.label}
-              </button>
+              />
             ))}
           </div>
-        </div>
+        </Section>
 
-        {/* Baby Selection (not for extraction) */}
+        {/* Baby Selection */}
         {type !== "extraction" && (
-          <div className="mb-4">
-            <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-              Bebe
-            </div>
-            <div className="flex gap-2">
+          <Section title="Bebe">
+            <div className="grid grid-cols-2 gap-2">
               {BABIES.map((b) => (
                 <button
                   key={b.id}
                   onClick={() => setBabyId(b.id)}
-                  className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer transition-all"
+                  className="py-3 rounded-xl text-sm font-bold cursor-pointer transition-all"
                   style={{
-                    background: babyId === b.id ? `${b.color}30` : "#0D0D1A",
-                    border: `1.5px solid ${babyId === b.id ? b.color : "#2A2A3E"}`,
-                    color: babyId === b.id ? b.color : "#555",
+                    background: babyId === b.id ? `${b.color}20` : "#0D0D1A",
+                    border: `2px solid ${babyId === b.id ? b.color : "#2A2A4E"}`,
+                    color: babyId === b.id ? b.color : "#666",
                   }}
                 >
                   {b.emoji} {b.name}
                 </button>
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
         {/* Feed Subtype */}
         {type === "feed" && (
-          <div className="mb-4">
-            <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-              Subtipo
-            </div>
+          <Section title="Tipo de alimento">
             <div className="flex flex-wrap gap-2">
               {FEED_SUBTYPES.map((s) => (
-                <button
+                <ChipButton
                   key={s.id}
+                  label={s.label}
+                  active={subtype === s.id}
+                  color="#4FC3F7"
                   onClick={() => setSubtype(s.id)}
-                  className="px-3 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                  style={{
-                    background: subtype === s.id ? "#4FC3F730" : "#0D0D1A",
-                    border: `1.5px solid ${subtype === s.id ? "#4FC3F7" : "#2A2A3E"}`,
-                    color: subtype === s.id ? "#4FC3F7" : "#555",
-                  }}
-                >
-                  {s.label}
-                </button>
+                />
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
         {/* Duration for breast */}
         {type === "feed" && subtype === "breast" && (
-          <div className="mb-4">
-            <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-              Duracion (min)
-            </div>
+          <Section title="Duracion (minutos)">
             <div className="flex flex-wrap gap-2">
               {BREAST_DURATIONS.map((d) => (
-                <button
+                <ChipButton
                   key={d}
+                  label={`${d}`}
+                  active={durationMin === d}
+                  color="#4FC3F7"
                   onClick={() => setDurationMin(d)}
-                  className="px-4 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                  style={{
-                    background: durationMin === d ? "#4FC3F730" : "#0D0D1A",
-                    border: `1.5px solid ${durationMin === d ? "#4FC3F7" : "#2A2A3E"}`,
-                    color: durationMin === d ? "#4FC3F7" : "#555",
-                  }}
-                >
-                  {d}
-                </button>
+                />
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
         {/* ML for pumped, formula, extraction */}
-        {((type === "feed" && (subtype === "pumped" || subtype === "formula")) ||
-          type === "extraction") && (
-          <div className="mb-4">
-            <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-              Cantidad (ml)
-            </div>
-            <div className="flex flex-wrap gap-2">
+        {((type === "feed" && (subtype === "pumped" || subtype === "formula")) || type === "extraction") && (
+          <Section title="Cantidad (ml)">
+            <div className="flex flex-wrap gap-2 mb-2">
               {ML_OPTIONS.map((m) => (
-                <button
+                <ChipButton
                   key={m}
+                  label={`${m}`}
+                  active={ml === m}
+                  color="#4FC3F7"
                   onClick={() => setMl(m)}
-                  className="px-4 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                  style={{
-                    background: ml === m ? "#4FC3F730" : "#0D0D1A",
-                    border: `1.5px solid ${ml === m ? "#4FC3F7" : "#2A2A3E"}`,
-                    color: ml === m ? "#4FC3F7" : "#555",
-                  }}
-                >
-                  {m}
-                </button>
+                />
               ))}
             </div>
             <input
@@ -228,150 +192,132 @@ export function AddEventModal({
               value={ml || ""}
               onChange={(e) => setMl(e.target.value ? parseInt(e.target.value) : null)}
               placeholder="Otro valor..."
-              className="mt-2 w-full rounded-xl p-3 text-sm"
-              style={{
-                background: "#0D0D1A",
-                border: "1px solid #2A2A3E",
-                color: "#fff",
-              }}
+              className="w-full rounded-xl p-3 text-sm bg-[#0D0D1A] border border-[#2A2A4E] text-white placeholder-[#555] focus:border-[#4FC3F7] focus:outline-none transition-colors"
             />
-          </div>
+          </Section>
         )}
 
         {/* Poop options */}
         {type === "poop" && (
           <>
-            <div className="mb-4">
-              <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-                Consistencia
-              </div>
+            <Section title="Consistencia">
               <div className="flex flex-wrap gap-2">
                 {POOP_CONSISTENCY.map((c) => (
-                  <button
+                  <ChipButton
                     key={c}
+                    label={c}
+                    active={consistency === c}
+                    color="#FFCC80"
                     onClick={() => setConsistency(c)}
-                    className="px-3 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                    style={{
-                      background: consistency === c ? "#FFCC8030" : "#0D0D1A",
-                      border: `1.5px solid ${consistency === c ? "#FFCC80" : "#2A2A3E"}`,
-                      color: consistency === c ? "#FFCC80" : "#555",
-                    }}
-                  >
-                    {c}
-                  </button>
+                  />
                 ))}
               </div>
-            </div>
-            <div className="mb-4">
-              <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-                Color
-              </div>
+            </Section>
+            <Section title="Color">
               <div className="flex flex-wrap gap-2">
                 {POOP_COLORS.map((c) => (
-                  <button
+                  <ChipButton
                     key={c}
+                    label={c}
+                    active={poopColor === c}
+                    color="#FFCC80"
                     onClick={() => setPoopColor(c)}
-                    className="px-3 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                    style={{
-                      background: poopColor === c ? "#FFCC8030" : "#0D0D1A",
-                      border: `1.5px solid ${poopColor === c ? "#FFCC80" : "#2A2A3E"}`,
-                      color: poopColor === c ? "#FFCC80" : "#555",
-                    }}
-                  >
-                    {c}
-                  </button>
+                  />
                 ))}
               </div>
-            </div>
+            </Section>
           </>
         )}
 
         {/* Other subtype */}
         {type === "other" && (
-          <div className="mb-4">
-            <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-              Subtipo
-            </div>
+          <Section title="Subtipo">
             <div className="flex flex-wrap gap-2">
               {OTHER_SUBTYPES.map((s) => (
-                <button
+                <ChipButton
                   key={s.id}
+                  label={`${s.icon} ${s.label}`}
+                  active={otherSubtype === s.id}
+                  color="#90A4AE"
                   onClick={() => setOtherSubtype(s.id)}
-                  className="px-3 py-2 rounded-xl text-sm font-bold cursor-pointer"
-                  style={{
-                    background: otherSubtype === s.id ? "#90A4AE30" : "#0D0D1A",
-                    border: `1.5px solid ${otherSubtype === s.id ? "#90A4AE" : "#2A2A3E"}`,
-                    color: otherSubtype === s.id ? "#90A4AE" : "#555",
-                  }}
-                >
-                  {s.icon} {s.label}
-                </button>
+                />
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
         {/* Date/Time */}
-        <div className="mb-4">
-          <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-            Fecha y hora
-          </div>
+        <Section title="Fecha y hora">
           <input
             type="datetime-local"
             value={dateTime}
             onChange={(e) => setDateTime(e.target.value)}
-            className="w-full rounded-xl p-3 text-sm"
-            style={{
-              background: "#0D0D1A",
-              border: "1px solid #2A2A3E",
-              color: "#fff",
-            }}
+            className="w-full rounded-xl p-3 text-sm bg-[#0D0D1A] border border-[#2A2A4E] text-white focus:border-[#4FC3F7] focus:outline-none transition-colors"
           />
-        </div>
+        </Section>
 
         {/* Notes */}
-        <div className="mb-6">
-          <div className="text-[11px] text-[#555] font-bold tracking-wide uppercase mb-2">
-            Notas (opcional)
-          </div>
+        <Section title="Notas (opcional)">
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full rounded-xl p-3 text-sm resize-none"
-            style={{
-              background: "#0D0D1A",
-              border: "1px solid #2A2A3E",
-              color: "#fff",
-            }}
+            className="w-full rounded-xl p-3 text-sm resize-none bg-[#0D0D1A] border border-[#2A2A4E] text-white placeholder-[#555] focus:border-[#4FC3F7] focus:outline-none transition-colors"
             placeholder="Agregar nota..."
           />
-        </div>
+        </Section>
 
         {/* Save Button */}
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full py-4 rounded-xl text-base font-extrabold cursor-pointer disabled:opacity-50"
+          className="w-full py-4 rounded-xl text-base font-extrabold cursor-pointer disabled:opacity-50 active:scale-[0.98] transition-transform mt-2"
           style={{
             background: "linear-gradient(135deg, #4FC3F7, #81C784)",
             color: "#000",
+            boxShadow: "0 4px 20px rgba(79, 195, 247, 0.3)",
           }}
         >
           {saving ? "Guardando..." : "Guardar"}
         </button>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
-        }
-      `}</style>
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-4">
+      <div className="text-[10px] text-[#666] font-bold tracking-widest uppercase mb-2">
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ChipButton({
+  label,
+  active,
+  color,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  color: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="px-4 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all"
+      style={{
+        background: active ? `${color}20` : "#0D0D1A",
+        border: `1.5px solid ${active ? color : "#2A2A4E"}`,
+        color: active ? color : "#666",
+      }}
+    >
+      {label}
+    </button>
   );
 }

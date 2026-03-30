@@ -17,6 +17,12 @@ export function BebeTracker() {
   const [showModal, setShowModal] = useState(false);
   const [modalInitialType, setModalInitialType] = useState("feed");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2500);
+  }, []);
 
   const handleOpenModal = useCallback((type = "feed") => {
     setModalInitialType(type);
@@ -31,27 +37,31 @@ export function BebeTracker() {
     if (confirmDeleteId) {
       await deleteEvent(confirmDeleteId);
       setConfirmDeleteId(null);
+      showToast("Registro eliminado");
     }
-  }, [confirmDeleteId, deleteEvent]);
+  }, [confirmDeleteId, deleteEvent, showToast]);
 
-  const lastUpdate = events.length > 0 ? events[0].date_time : null;
+  const handleSave = useCallback(async (event: Parameters<typeof addEvent>[0]) => {
+    await addEvent(event);
+    showToast("Guardado correctamente");
+  }, [addEvent, showToast]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4 animate-pulse">🌙</div>
-          <div className="text-sm text-[#555]">Cargando...</div>
+          <div className="text-5xl mb-4 animate-pulse">🌙</div>
+          <div className="text-sm text-[#666] font-medium">Cargando...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen relative pb-[90px]">
-      <Header lastUpdate={lastUpdate} isLive={true} />
+    <div className="min-h-screen relative pb-24">
+      <Header events={events} isLive />
 
-      <div className="px-4">
+      <main className="px-4">
         {activeTab === "home" && (
           <HomeTab
             events={events}
@@ -70,7 +80,7 @@ export function BebeTracker() {
             onAddExtraction={() => handleOpenModal("extraction")}
           />
         )}
-      </div>
+      </main>
 
       <FAB onClick={() => handleOpenModal("feed")} />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
@@ -78,45 +88,43 @@ export function BebeTracker() {
       {showModal && (
         <AddEventModal
           onClose={() => setShowModal(false)}
-          onSave={addEvent}
+          onSave={handleSave}
           initialType={modalInitialType}
         />
       )}
 
+      {/* Toast Notification */}
+      {toast && (
+        <div 
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm font-bold z-[100] animate-fade-in"
+          style={{
+            background: "#1E1E35",
+            border: "1px solid #2A2A4E",
+            color: "#fff",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          }}
+        >
+          {toast}
+        </div>
+      )}
+
       {/* Confirm Delete Modal */}
       {confirmDeleteId && (
-        <div
-          className="fixed inset-0 flex items-center justify-center z-50"
-          style={{ background: "#000a" }}
-        >
-          <div
-            className="rounded-2xl p-6 w-72 text-center"
-            style={{ background: "#1A1A2E", border: "1px solid #2A2A4E" }}
-          >
-            <div className="text-lg font-extrabold mb-2">Eliminar registro?</div>
-            <div className="text-sm text-[#888] mb-5">
-              Esta accion no se puede deshacer
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center z-[90] animate-fade-in" style={{ background: "rgba(0,0,0,0.7)" }}>
+          <div className="rounded-2xl p-6 w-[300px] text-center bg-[#1A1A2E] border border-[#2A2A4E] animate-slide-up">
+            <div className="text-3xl mb-3">🗑️</div>
+            <div className="text-lg font-extrabold mb-2 text-white">Eliminar registro?</div>
+            <div className="text-sm text-[#888] mb-5">Esta accion no se puede deshacer</div>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer"
-                style={{
-                  background: "#0D0D1A",
-                  border: "1px solid #2A2A3E",
-                  color: "#888",
-                }}
+                className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer bg-[#0D0D1A] border border-[#2A2A3E] text-[#888] hover:bg-[#1A1A2E] transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={confirmDelete}
-                className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer"
-                style={{
-                  background: "#EF535020",
-                  border: "1px solid #EF535040",
-                  color: "#EF5350",
-                }}
+                className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer bg-[#EF535020] border border-[#EF535040] text-[#EF5350] hover:bg-[#EF535030] transition-colors"
               >
                 Eliminar
               </button>
