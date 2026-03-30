@@ -15,9 +15,9 @@ const TABS = [
 export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 flex justify-around items-center py-3 px-4"
+      className="fixed bottom-0 left-0 right-0 flex justify-around items-center py-3 px-4 max-w-[440px] mx-auto"
       style={{
-        background: "linear-gradient(to top, #0A0A15 80%, #0A0A1500)",
+        background: "linear-gradient(to top, #0A0A15 95%, #0A0A1500)",
         paddingBottom: "env(safe-area-inset-bottom, 16px)",
       }}
     >

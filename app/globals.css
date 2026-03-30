@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-nunito), 'Nunito', 'Segoe UI', sans-serif;
+}
+
 :root {
   --background: #0A0A15;
   --foreground: #ffffff;

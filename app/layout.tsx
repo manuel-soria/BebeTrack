@@ -32,8 +32,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${nunito.variable} font-sans antialiased`}>
-        {children}
+      <body className={`${nunito.variable} font-sans antialiased w-full flex justify-center`}>
+        <div className="w-full max-w-[440px]">
+          {children}
+        </div>
       </body>
     </html>
   );

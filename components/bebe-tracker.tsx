@@ -48,7 +48,7 @@ export function BebeTracker() {
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen relative pb-24">
+    <div className="w-full min-h-screen relative pb-[90px]">
       <Header lastUpdate={lastUpdate} isLive={true} />
 
       <div className="px-4">
